@@ -73,8 +73,15 @@ defmodule EventsourceEx do
     {:stop, :normal, state}
   end
 
-  def handle_info(_msg, state) do
-    # Ignore unhandled messages
+  def handle_info(msg, state) do
+    msg = %EventsourceEx.Message{
+      dispatch_ts: DateTime.utc_now(),
+      event: "message",
+      id: msg.id
+    }
+
+    send(state.parent, msg)
+
     {:noreply, state}
   end
 
